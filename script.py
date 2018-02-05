@@ -47,13 +47,21 @@ except IOError:
     print 'The file' + filenameRange + ' couldn\'t be found'
     sys.exit(0)
 
+
 #Read password file
+passwords = set()
 try:
     file = open(filenamePwd, 'r')
     while True:
         password = ''.join(file.readline().splitlines())
         if (password == ''):
             break
+
+        passwords.add(password)
 except IOError:
     print 'The file' + filenamePwd + ' couldn\'t be found'
     sys.exit(0)
+
+#TODO remove (just for display)
+for passw in passwords:
+    print passw
