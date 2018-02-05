@@ -30,14 +30,14 @@ try:
 
         # Ping all devices from the broadcast address using subprocess
         pingObject = PingObject(broadcast_address)
-        upHosts = pingObject.pingHosts()
+        up_hosts = pingObject.pingHosts()
 
-        if upHosts is None:
+        if up_hosts is None:
             print 'Couldn\'t ping devices'
             sys.exit(0)
         else:
             #TODO remove (just for display)
-            for host in upHosts:
+            for host in up_hosts:
                 print host
 
 except ValueError:
