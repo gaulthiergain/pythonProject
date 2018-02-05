@@ -10,6 +10,8 @@ https://docs.python.org/3/library/ipaddress.html
 import re
 import ipaddress
 
+from PingObject import PingObject
+
 filenameRange = 'range.txt'
 filenamePwd = 'password.txt'
 
@@ -25,8 +27,10 @@ try:
         ip_network = ipaddress.ip_network(unicode(ip_add, "UTF-8"), strict = False)
         broadcast_address = ip_network.broadcast_address
         
-        print ip_network
-        print broadcast_address
+        # Ping all devices from the broadcast address using subprocess
+        pingObject = PingObject(broadcast_address)
+        upHosts = pingObject.pingHosts()
+
 except ValueError:
     print 'Invalid IP address format'
 except IOError:
