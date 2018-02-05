@@ -16,7 +16,7 @@ from PingObject import PingObject
 filenameRange = 'range.txt'
 filenamePwd = 'password.txt'
 
-#Begin to read range file
+# Read range file
 try:
     file = open(filenameRange, 'r')
     while True:
@@ -45,4 +45,15 @@ except ValueError:
     sys.exit(0)
 except IOError:
     print 'The file' + filenameRange + ' couldn\'t be found'
+    sys.exit(0)
+
+#Read password file
+try:
+    file = open(filenamePwd, 'r')
+    while True:
+        password = ''.join(file.readline().splitlines())
+        if (password == ''):
+            break
+except IOError:
+    print 'The file' + filenamePwd + ' couldn\'t be found'
     sys.exit(0)
