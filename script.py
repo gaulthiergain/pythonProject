@@ -9,6 +9,7 @@ https://docs.python.org/3/library/ipaddress.html
 
 import re
 import ipaddress
+import sys
 
 from PingObject import PingObject
 
@@ -26,13 +27,14 @@ try:
         # Use ipaddress module to check the validity of ip address
         ip_network = ipaddress.ip_network(unicode(ip_add, "UTF-8"), strict = False)
         broadcast_address = ip_network.broadcast_address
-        
+
         # Ping all devices from the broadcast address using subprocess
         pingObject = PingObject(broadcast_address)
         upHosts = pingObject.pingHosts()
 
         if upHosts is None:
-            print 'Error with ping function'
+            print 'Couldn\'t ping devices'
+            sys.exit(0)
         else:
             #TODO remove (just for display)
             for host in upHosts:
@@ -40,7 +42,7 @@ try:
 
 except ValueError:
     print 'Invalid IP address format'
+    sys.exit(0)
 except IOError:
     print 'The file' + filenameRange + ' couldn\'t be found'
-    exit()
-
+    sys.exit(0)
