@@ -13,10 +13,8 @@ import sys
 
 from PingObject import PingObject
 
-filenamePwd = 'password.txt'
-
 """
-Method allowing to read a range of ip addresses
+Method allowing to read a range of ip addresses from a file
 """
 def GetAddressHosts(filenameRange):
     try:
@@ -41,9 +39,28 @@ def GetAddressHosts(filenameRange):
         print 'The file' + filenameRange + ' couldn\'t be found'
         sys.exit(0)
 
-# Read range first
-filenameRange = 'range.txt'
-up_hosts = GetAddressHosts(filenameRange)
+"""
+Method allowing to read passwords from a file
+"""
+def ReadPasswords(filenamePwd):
+    passwords = set()
+    try:
+        file = open(filenamePwd, 'r')
+        while True:
+            password = ''.join(file.readline().splitlines())
+            if (password == ''):
+                break
+
+            # Add current password to a set of passwords
+            passwords.add(password)
+        return passwords
+    except IOError:
+        print 'The file' + filenamePwd + ' couldn\'t be found'
+        sys.exit(0)
+
+# 1. Read range first
+filename_range = 'range.txt'
+up_hosts = GetAddressHosts(filename_range)
 if up_hosts is None:
     print 'Couldn\'t ping devices'
     sys.exit(0)
@@ -52,20 +69,13 @@ else:
     for host in up_hosts:
         print host
 
-#Read password file
-passwords = set()
-try:
-    file = open(filenamePwd, 'r')
-    while True:
-        password = ''.join(file.readline().splitlines())
-        if (password == ''):
-            break
-
-        passwords.add(password)
-except IOError:
-    print 'The file' + filenamePwd + ' couldn\'t be found'
+# 2. Read passwords file
+filename_pwd = 'password.txt'
+passwords = ReadPasswords(filename_pwd)
+if passwords is None:
+    print 'Empty passwords list'
     sys.exit(0)
-
-#TODO remove (just for display)
-for passw in passwords:
-    print passw
+else:
+    #TODO remove (just for display)
+    for password in passwords:
+        print password
