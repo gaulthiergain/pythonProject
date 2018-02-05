@@ -16,7 +16,7 @@ from PingObject import PingObject
 """
 Method allowing to read ip addresses from a file
 """
-def GetAddressHosts(filenameRange):
+def readRange(filenameRange):
     try:
         file = open(filenameRange, 'r')
         while True:
@@ -26,7 +26,7 @@ def GetAddressHosts(filenameRange):
 
             # Use ipaddress module to check the validity of ip address
             ip_network = ipaddress.ip_network(unicode(ip_add, "UTF-8"), strict = False)
-            return GetUpHosts(ip_network)
+            return getUpHosts(ip_network)
 
     except ValueError:
         print 'Invalid IP address format'
@@ -38,7 +38,7 @@ def GetAddressHosts(filenameRange):
 """
 Method allowing to compute broadcast_address and to ping hosts that are up
 """
-def GetUpHosts(ip_network):
+def getUpHosts(ip_network):
     # Get broadcast_address from ip network
     broadcast_address = ip_network.broadcast_address
 
@@ -49,7 +49,7 @@ def GetUpHosts(ip_network):
 """
 Method allowing to read passwords from a file
 """
-def ReadPasswords(filenamePwd):
+def readPasswords(filenamePwd):
     passwords = set()
     try:
         file = open(filenamePwd, 'r')
@@ -67,7 +67,7 @@ def ReadPasswords(filenamePwd):
 
 # 1. Read range first
 filename_range = 'range.txt'
-up_hosts = GetAddressHosts(filename_range)
+up_hosts = readRange(filename_range)
 if up_hosts is None:
     print 'Couldn\'t ping devices'
     sys.exit(0)
@@ -78,7 +78,7 @@ else:
 
 # 2. Read passwords file
 filename_pwd = 'password.txt'
-passwords = ReadPasswords(filename_pwd)
+passwords = readPasswords(filename_pwd)
 if passwords is None:
     print 'Empty passwords list'
     sys.exit(0)
