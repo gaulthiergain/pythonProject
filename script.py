@@ -13,40 +13,44 @@ import sys
 
 from PingObject import PingObject
 
-filenameRange = 'range.txt'
 filenamePwd = 'password.txt'
 
-# Read range file
-try:
-    file = open(filenameRange, 'r')
-    while True:
-        ip_add = ''.join(file.readline().splitlines())
-        if (ip_add == ''):
-            break
+"""
+Method allowing to read a range of ip addresses
+"""
+def GetAddressHosts(filenameRange):
+    try:
+        file = open(filenameRange, 'r')
+        while True:
+            ip_add = ''.join(file.readline().splitlines())
+            if (ip_add == ''):
+                break
 
-        # Use ipaddress module to check the validity of ip address
-        ip_network = ipaddress.ip_network(unicode(ip_add, "UTF-8"), strict = False)
-        broadcast_address = ip_network.broadcast_address
+            # Use ipaddress module to check the validity of ip address
+            ip_network = ipaddress.ip_network(unicode(ip_add, "UTF-8"), strict = False)
+            broadcast_address = ip_network.broadcast_address
 
-        # Ping all devices from the broadcast address using subprocess
-        pingObject = PingObject(broadcast_address)
-        up_hosts = pingObject.pingHosts()
+            # Ping all devices from the broadcast address using subprocess
+            pingObject = PingObject(broadcast_address)
+            return pingObject.pingHosts()
 
-        if up_hosts is None:
-            print 'Couldn\'t ping devices'
-            sys.exit(0)
-        else:
-            #TODO remove (just for display)
-            for host in up_hosts:
-                print host
+    except ValueError:
+        print 'Invalid IP address format'
+        sys.exit(0)
+    except IOError:
+        print 'The file' + filenameRange + ' couldn\'t be found'
+        sys.exit(0)
 
-except ValueError:
-    print 'Invalid IP address format'
+# Read range first
+filenameRange = 'range.txt'
+up_hosts = GetAddressHosts(filenameRange)
+if up_hosts is None:
+    print 'Couldn\'t ping devices'
     sys.exit(0)
-except IOError:
-    print 'The file' + filenameRange + ' couldn\'t be found'
-    sys.exit(0)
-
+else:
+    #TODO remove (just for display)
+    for host in up_hosts:
+        print host
 
 #Read password file
 passwords = set()
