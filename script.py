@@ -14,7 +14,7 @@ import sys
 from PingObject import PingObject
 
 """
-Method allowing to read a range of ip addresses from a file
+Method allowing to read ip addresses from a file
 """
 def GetAddressHosts(filenameRange):
     try:
@@ -26,11 +26,7 @@ def GetAddressHosts(filenameRange):
 
             # Use ipaddress module to check the validity of ip address
             ip_network = ipaddress.ip_network(unicode(ip_add, "UTF-8"), strict = False)
-            broadcast_address = ip_network.broadcast_address
-
-            # Ping all devices from the broadcast address using subprocess
-            pingObject = PingObject(broadcast_address)
-            return pingObject.pingHosts()
+            return GetUpHosts(ip_network)
 
     except ValueError:
         print 'Invalid IP address format'
@@ -38,6 +34,17 @@ def GetAddressHosts(filenameRange):
     except IOError:
         print 'The file' + filenameRange + ' couldn\'t be found'
         sys.exit(0)
+
+"""
+Method allowing to compute broadcast_address and to ping hosts that are up
+"""
+def GetUpHosts(ip_network):
+    # Get broadcast_address from ip network
+    broadcast_address = ip_network.broadcast_address
+
+    # Ping all devices from the broadcast address using subprocess
+    pingObject = PingObject(broadcast_address)
+    return pingObject.pingHosts()
 
 """
 Method allowing to read passwords from a file
