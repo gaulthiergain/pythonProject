@@ -31,6 +31,13 @@ try:
         pingObject = PingObject(broadcast_address)
         upHosts = pingObject.pingHosts()
 
+        if upHosts is None:
+            print 'Error with ping function'
+        else:
+            #TODO remove (just for display)
+            for host in upHosts:
+                print host
+
 except ValueError:
     print 'Invalid IP address format'
 except IOError:
