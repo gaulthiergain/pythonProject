@@ -50,17 +50,12 @@ def getUpHosts(ip_network):
 Method allowing to read passwords from a file
 """
 def readPasswords(filenamePwd):
-    passwords = set()
     try:
-        file = open(filenamePwd, 'r')
-        while True:
-            password = ''.join(file.readline().splitlines())
-            if (password == ''):
-                break
+        with open(filename_pwd) as file:
+            content = file.readlines()
 
-            # Add current password to a set of passwords
-            passwords.add(password)
-        return passwords
+        # Return all the passwords as a list
+        return [x.strip() for x in content]
     except IOError:
         print 'The file' + filenamePwd + ' couldn\'t be found'
         sys.exit(0)
