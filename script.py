@@ -87,3 +87,27 @@ else:
     #TODO remove (just for display)
     for password in passwords:
         print password
+
+
+"""
+#Test for visualize the network
+#Add the following Libs
+#import networkx as nx
+#import matplotlib.pyplot as plt
+print '-------\n\n'
+G = nx.Graph()
+dico = {}
+up_hosts.add("192.168.1.2")
+up_hosts.add("192.168.1.4")
+for host in up_hosts:
+dico[host] = list()
+dico[host].append(str(host) + " neighbor 1")
+dico[host].append(str(host) + " neighbor 2")
+G.add_node(host)
+for values in dico[host]:
+G.add_edge(host, values)
+
+nx.draw(G, with_labels=True, font_weight='bold')
+plt.show()
+plt.savefig("topology.png")
+"""
