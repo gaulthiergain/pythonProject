@@ -17,16 +17,22 @@ from PingObject import PingObject
 Method allowing to read ip addresses from a file
 """
 def readRange(filenameRange):
+    up_hosts = set()
     try:
-        file = open(filenameRange, 'r')
-        while True:
-            ip_add = ''.join(file.readline().splitlines())
-            if (ip_add == ''):
-                break
+        with open(filenameRange) as file:
+            content = file.readlines()
 
-            # Use ipaddress module to check the validity of ip address
-            ip_network = ipaddress.ip_network(unicode(ip_add, "UTF-8"), strict = False)
-            return getUpHosts(ip_network)
+            # Save ranges into a list
+            ranges = [x.strip() for x in content]
+
+            # Iterate over each range
+            for ip_add in ranges:
+                # Use ipaddress module to check the validity of ip range
+                ip_network = ipaddress.ip_network(unicode(ip_add, "UTF-8"), strict = False)
+                # Add all discovered devices into a set
+                up_hosts.update(getUpHosts(ip_network))
+
+            return up_hosts
 
     except ValueError:
         print 'Invalid IP address format'
