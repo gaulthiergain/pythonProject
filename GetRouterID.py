@@ -14,40 +14,44 @@ class GetRouterID:
     def __init__ (self, hosts, passwords):
         self.hosts = hosts
         self.passwords = passwords
-        self.ID = {}
         self.devices = []
+        
+    def find_password(self, host, ID):
+        for password in self.passwords:
+            try:
+                session = ConnectHandler(device_type = 'cisco_ios',
+                                         ip = host, 
+                                         username = 'admin', 
+                                         password = password)
+                if session.is_alive():
+                    ID['Password'] = password
+                    return session
+                    break
+            except NetMikoAuthenticationException:
+                continue
     
-    def connect(self):
-    #in loop use all IP find our correct password and collect info from router
+    def GetID(self):
         for host in self.hosts:
-            print 'connection to', host
-            for password in self.passwords:
-                    try:
-                        session = ConnectHandler(device_type = 'cisco_ios',
-                                                 ip = host, 
-                                                 username = 'admin', 
-                                                 password = password)
-                        check = session.is_alive()
-                        print check
-                        self.ID['Host'] = host
-                        self.ID['Password'] = password
-                        self.collect_info(session)                
-                        session.disconnect()
-                        check = session.is_alive()
-                        print check
-                        self.devices.append(self.ID)
-                    except NetMikoAuthenticationException:
-                        continue
+            self.connect(host)
         return self.devices
+            
+    def connect(self, host):
+        ID = {'Host':host}        
+        session = self.find_password(host,ID)
+        self.collect_info(session, ID)
+        session.disconnect()
+        self.devices.append(ID)
+        return ID
 
-    def collect_info(self,session):
+    def collect_info(self,session, ID):
     #in open session send command do get infor
         output = session.send_command('show version')
         version = re.search ('(Version .*),',output)
         output = session.send_command('show invento')
         inventory = re.search('(PID: *.),',output)
-        self.ID['IOS version'] = version.group(1)
-        self.ID['Inventory'] = inventory.group(1)
+        ID['IOS version'] = version.group(1)
+        ID['Inventory'] = inventory.group(1)
+        return ID
         
       
 
