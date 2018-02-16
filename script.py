@@ -11,6 +11,8 @@ import re
 import ipaddress
 import sys
 
+
+from GetRouterID import GetRouterID
 from PingObject import PingObject
 
 """
@@ -87,6 +89,11 @@ else:
     #TODO remove (just for display)
     for password in passwords:
         print password
+
+# 3. Connect and collect info
+GetRouterID = GetRouterID (up_hosts, passwords)
+dev = GetRouterID.connect()
+print dev
 
 
 """

@@ -3,6 +3,7 @@
 
 """
 #Libs used: re, netmiko
+
 """
 from netmiko import ConnectHandler 
 from netmiko.ssh_exception import NetMikoAuthenticationException
@@ -14,27 +15,30 @@ class GetRouterID:
         self.hosts = hosts
         self.passwords = passwords
         self.ID = {}
+        self.devices = []
     
     def connect(self):
     #in loop use all IP find our correct password and collect info from router
         for host in self.hosts:
-            try:
-                for password in self.passwords:
-                    session = ConnectHandler(device_type = 'cisco_ios',
-                                         ip = host, 
-                                         username = 'admin', 
-                                         password = password)
-                    check = session.is_alive()
-                    print check
-                    self.ID['Host'] = host
-                    self.ID['Password'] = password
-                    self.collect_info(session)                
-                    session.disconnect()
-                    check = session.is_alive()
-                    print check
-                    print self.ID
-            except NetMikoAuthenticationException:
-                continue 
+            print 'connection to', host
+            for password in self.passwords:
+                    try:
+                        session = ConnectHandler(device_type = 'cisco_ios',
+                                                 ip = host, 
+                                                 username = 'admin', 
+                                                 password = password)
+                        check = session.is_alive()
+                        print check
+                        self.ID['Host'] = host
+                        self.ID['Password'] = password
+                        self.collect_info(session)                
+                        session.disconnect()
+                        check = session.is_alive()
+                        print check
+                        self.devices.append(self.ID)
+                    except NetMikoAuthenticationException:
+                        continue
+        return self.devices
 
     def collect_info(self,session):
     #in open session send command do get infor
