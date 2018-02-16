@@ -93,7 +93,9 @@ else:
 # 3. Connect and collect info
 GetRouterID = GetRouterID (up_hosts, passwords)
 dev = GetRouterID.GetID()
-print dev
+for list in dev:
+    print '\n', list, '\n'
+
 
 
 """
