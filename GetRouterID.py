@@ -10,7 +10,7 @@ from netmiko.ssh_exception import NetMikoAuthenticationException
 import re
 
 class GetRouterID:
-    #need list of available hosts and list of passowrds
+    # Need list of available hosts and list of passwords
     def __init__ (self, hosts, passwords):
         self.hosts = hosts
         self.passwords = passwords
@@ -55,9 +55,11 @@ class GetRouterID:
         ID['IOS version'] = version.group(1)
         ID['Inventory'] = inventory.group(1)
 
+        # Get CDP neighbors and use regex
         output = session.send_command('show cdp neighbors')
         matches = re.finditer(r'(\S+)\s+\S+\s\d/\d\s+\d+', output, re.MULTILINE)
 
+        # Add CDP neighbors into a list
         devicesCDP = list()
         for matchNum, match in enumerate(matches):
             for groupNum in range(0, len(match.groups())):
@@ -74,16 +76,23 @@ class GetRouterID:
             output = session.send_command('show run | section ip domain name')
             domain_name = re.search ('ip domain name (.*)', output)
 
+            # Exit Privilegied EXEC mode
             session.exit_enable_mode()
 
+            # If the domain_name is set, take it into account
             if domain_name is not None:
                 self.computeNeighbors(devicesCDP, str(hostname.group(1)) + '.' + str(domain_name.group(1)))
             else:
+                # Take only the hostname if domain_name is not set
                 self.computeNeighbors(devicesCDP, hostname.group(1))
 
         return ID
 
+    """
+    Method allowing to compute all the CDP neighbors
+    """
     def computeNeighbors(self, devicesCDP, hostname):
+        # Compute the neighbors and add them into a dictionnary
         self.neighbors[hostname] = list()
-        for dev in devicesCDP:
-            self.neighbors[hostname].append(dev);
+        for device in devicesCDP:
+            self.neighbors[hostname].append(device);
