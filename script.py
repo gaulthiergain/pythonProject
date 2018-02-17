@@ -11,6 +11,8 @@ import re
 import ipaddress
 import sys
 
+import networkx as nx
+import matplotlib.pyplot as plt
 
 from GetRouterID import GetRouterID
 from PingObject import PingObject
@@ -96,27 +98,13 @@ dev = GetRouterID.GetID()
 for list in dev:
     print '\n', list, '\n'
 
-
-
-"""
-#Test for visualize the network
-#Add the following Libs
-#import networkx as nx
-#import matplotlib.pyplot as plt
-print '-------\n\n'
+# 4. Build topology
 G = nx.Graph()
-dico = {}
-up_hosts.add("192.168.1.2")
-up_hosts.add("192.168.1.4")
-for host in up_hosts:
-dico[host] = list()
-dico[host].append(str(host) + " neighbor 1")
-dico[host].append(str(host) + " neighbor 2")
-G.add_node(host)
-for values in dico[host]:
-G.add_edge(host, values)
+
+for key in GetRouterID.neighbors:
+	G.add_node(str(key))
+	for values in GetRouterID.neighbors[str(key)]:
+		G.add_edge(key, values)
 
 nx.draw(G, with_labels=True, font_weight='bold')
 plt.show()
-plt.savefig("topology.png")
-"""
