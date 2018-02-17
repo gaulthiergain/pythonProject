@@ -8,6 +8,7 @@
 from netmiko import ConnectHandler
 from netmiko.ssh_exception import NetMikoAuthenticationException
 import re
+import threading
 
 class GetRouterID:
     # Need list of available hosts and list of passwords
@@ -18,6 +19,7 @@ class GetRouterID:
         self.neighbors = {}
 
     def find_password(self, host, ID):
+
         for password in self.passwords:
             try:
                 session = ConnectHandler(device_type = 'cisco_ios',
@@ -33,8 +35,14 @@ class GetRouterID:
                 continue
 
     def GetID(self):
+         # added threads
+        threads = []
         for host in self.hosts:
-            self.connect(host)
+            th = threading.Thread (target = self.connect, args = (host,))
+            th.start()
+            threads.append(th)
+        for th in threads:
+            th.join()
         return self.devices
 
     def connect(self, host):
