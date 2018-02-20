@@ -55,13 +55,35 @@ class GetRouterID:
 
     def collect_info(self, host, session, ID):
         #in open session send command do get infor
-
+        
+        # Privilegied EXEC mode
+        session.enable()
+        interfaces = {}
+        modules = {}
+        
+        #get OS version
         output = session.send_command('show version')
         version = re.search ('(Version .*),',output)
-        output = session.send_command('show invento')
-        inventory = re.search('(PID: *.),',output)
+        
+        #get interface description
+        output = session.send_command('show int descr')
+        for line in output.splitlines():
+            data = re.search('(.*\d) *(up|down|admin down) *(up|down) *(.*)', line)
+            if data:
+                interfaces[data.group(1)]= {}
+                interfaces[data.group(1)]['Status']= data.group(2)
+                interfaces[data.group(1)]['Protocol'] = data.group(3)
+                interfaces[data.group(1)]['Description'] = data.group(4)
+         
+        #get modules
+        output =  session.send_command('show diag')
+        matches = re.findall('(Slot .*):\n\s*(.*)', output)
+        if matches:
+            for match in matches:
+                modules [match[0]] = match[1]
+        ID['Modules'] = modules
+        ID['Interfaces'] = interfaces    
         ID['IOS version'] = version.group(1)
-        ID['Inventory'] = inventory.group(1)
 
         # Get CDP neighbors and use regex
         output = session.send_command('show cdp neighbors')
@@ -74,9 +96,6 @@ class GetRouterID:
                 devicesCDP.append(match.group(1))
 
         if len(devicesCDP) > 0:
-            # Privilegied EXEC mode
-            session.enable()
-
             # Get Hostname and domain name by display running-config
             output = session.send_command('show run | section hostname')
             hostname = re.search ('hostname (.*)', output)
@@ -84,16 +103,16 @@ class GetRouterID:
             output = session.send_command('show run | section ip domain name')
             domain_name = re.search ('ip domain name (.*)', output)
 
-            # Exit Privilegied EXEC mode
-            session.exit_enable_mode()
-
             # If the domain_name is set, take it into account
             if domain_name is not None:
                 self.computeNeighbors(devicesCDP, str(hostname.group(1)) + '.' + str(domain_name.group(1)))
             else:
                 # Take only the hostname if domain_name is not set
                 self.computeNeighbors(devicesCDP, hostname.group(1))
-
+        
+        # Exit Privilegied EXEC mode
+        session.exit_enable_mode()
+        
         return ID
 
     """
