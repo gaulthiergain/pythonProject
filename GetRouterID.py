@@ -46,6 +46,16 @@ class GetRouterID:
         return self.devices
 
     def connect(self, host):
+        #ID structure:
+        #{'Host': string, 'Password': string, 'IOS version': string, 'Hardware version': string,
+        #'Modules': dictionary, 'Interfaces': dictionary}
+        #
+        #'Modules': dictionary {'Slot(n)': string}
+        #
+        #'Interfaces': dictionary {'Interface': dictionary
+        #{'Status': string, 'Protocol': string, 'Description': string}}:
+        #
+        
         ID = {'Host':host}
         session = self.find_password(host,ID)
         self.collect_info(host, session, ID)
@@ -62,9 +72,10 @@ class GetRouterID:
         modules = {}
         
         #get OS version
-        output = session.send_command('show version')
+        output = session.send_command('show version | inc Cisco')
         version = re.search ('(Version .*),',output)
-        
+        #get Hardware version
+        hw_version = re.search ('Cisco\s*\d+', output)
         #get interface description
         output = session.send_command('show int descr')
         for line in output.splitlines():
@@ -81,6 +92,7 @@ class GetRouterID:
         if matches:
             for match in matches:
                 modules [match[0]] = match[1]
+        ID['Hardware version'] = hw_version.group(0)
         ID['Modules'] = modules
         ID['Interfaces'] = interfaces    
         ID['IOS version'] = version.group(1)
