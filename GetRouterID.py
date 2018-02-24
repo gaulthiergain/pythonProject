@@ -97,7 +97,9 @@ class GetRouterID:
         
         #get SN
         SN = re.search ('Chassis Serial Number \s*: (\S*)', output)
-        self.SN_list.append (SN.group(1))
+        
+        # Uncomment this if real equipment is being used
+        # self.SN_list.append (SN.group(1))
          
         ID['SN'] = SN.group(1)
         ID['Hardware version'] = hw_version.group(0)

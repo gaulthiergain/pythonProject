@@ -99,8 +99,9 @@ GetRouterID = GetRouterID (up_hosts, passwords)
 dev = GetRouterID.GetID()
 
 #TODO remove (just for display)
-for list in dev:
-    print '\n', list, '\n'
+# for list in dev:
+#     print '\n', list, '\n'
+print dev
 #TODO remove (just for display)
  
 # 4. Get info about End Of Life
