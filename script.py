@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 
 from GetRouterID import GetRouterID
 from PingObject import PingObject
+from HTMLoutput import HTML
 
 """
 Method allowing to read ip addresses from a file
@@ -97,22 +98,17 @@ else:
 print 'Connecting to the routers and collecting information'
 GetRouterID = GetRouterID (up_hosts, passwords)
 dev = GetRouterID.GetID()
-
-#TODO remove (just for display)
-# for list in dev:
-#     print '\n', list, '\n'
-print dev
-#TODO remove (just for display)
  
 # 4. Get info about End Of Life
 print 'Requesting to the API for End of Life dates'
 EoL = GetRouterID.getEoL()
 
-#TODO remove (just for display)
-print EoL
-#TODO remove (just for display)
+# 5. Output results into .html file and show it
+html = HTML (dev, EoL)
+html.createHTML()
 
-# 5. Build topology
+
+# 6. Build topology
 print 'Building the topology'
 G = nx.Graph()
 
