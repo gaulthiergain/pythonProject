@@ -5,7 +5,7 @@ import webbrowser
 import os
 
 class HTML:
-    # Need list of available hosts and list of passwords
+    # Need list of devises ID and list with serial numbers-Eol
     def __init__ (self, dev, EoL):
         self.dev = dev
         self.EoL = EoL

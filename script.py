@@ -9,7 +9,6 @@ https://docs.python.org/3/library/ipaddress.html
 import re
 import ipaddress
 import sys
-
 import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -77,10 +76,6 @@ up_hosts = readRange(filename_range)
 if up_hosts is None:
     print 'Couldn\'t ping devices'
     sys.exit(0)
-else:
-    #TODO remove (just for display)
-    for host in up_hosts:
-        print host
 
 # 2. Read passwords file
 print 'Reading password.txt file'
@@ -89,10 +84,6 @@ passwords = readPasswords(filename_pwd)
 if passwords is None:
     print 'Empty passwords list'
     sys.exit(0)
-else:
-    #TODO remove (just for display)
-    for password in passwords:
-        print password
 
 # 3. Connect and collect info
 print 'Connecting to the routers and collecting information'
@@ -106,7 +97,6 @@ EoL = GetRouterID.getEoL()
 # 5. Output results into .html file and show it
 html = HTML (dev, EoL)
 html.createHTML()
-
 
 # 6. Build topology
 print 'Building the topology'
