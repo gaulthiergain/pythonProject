@@ -1,14 +1,13 @@
-#TODO revise collected ifno
-#TODO check why only one result is displeyed
-
 """
-#Libs used: re, netmiko
+#Libs used: re, netmiko, json, threading, requests
 
 """
 from netmiko import ConnectHandler
 from netmiko.ssh_exception import NetMikoAuthenticationException
 import re
 import threading
+import requests
+import json
 
 class GetRouterID:
     # Need list of available hosts and list of passwords
@@ -17,6 +16,9 @@ class GetRouterID:
         self.passwords = passwords
         self.devices = []
         self.neighbors = {}
+        
+        # Uncomment this if real equipment is being used
+        # self.SN_list = []
 
     def find_password(self, host, ID):
 
@@ -48,7 +50,7 @@ class GetRouterID:
     def connect(self, host):
         #ID structure:
         #{'Host': string, 'Password': string, 'IOS version': string, 'Hardware version': string,
-        #'Modules': dictionary, 'Interfaces': dictionary}
+        #'SN': string,'Modules': dictionary, 'Interfaces': dictionary}
         #
         #'Modules': dictionary {'Slot(n)': string}
         #
@@ -92,6 +94,12 @@ class GetRouterID:
         if matches:
             for match in matches:
                 modules [match[0]] = match[1]
+        
+        #get SN
+        SN = re.search ('Chassis Serial Number \s*: (\S*)', output)
+        self.SN_list.append (SN.group(1))
+         
+        ID['SN'] = SN.group(1)
         ID['Hardware version'] = hw_version.group(0)
         ID['Modules'] = modules
         ID['Interfaces'] = interfaces    
@@ -135,3 +143,53 @@ class GetRouterID:
         self.neighbors[hostname] = list()
         for device in devicesCDP:
             self.neighbors[hostname].append(device);
+
+    """
+    Method allowing to get EoL
+    """
+    #Uncomment this if real equipment is being used
+    # def getEoL (self):
+    #     EoL_list = {}
+    #     
+    #     #token request
+    #     token_rul = 'https://cloudsso.cisco.com/as/token.oauth2?grant_type=client_credentials'
+    #     Client_ID = 'wzxkkg83w8bgjp6kqg8p2eex'
+    #     Client_Secret = 'GCY7NPUTMSMFpgtQCecpAdFj'
+    #     resp = requests.post(token_rul, auth=(Client_ID, Client_Secret)).json()
+    #     
+    #     #EoL request
+    #     SN = ','.join(self.SN_list)
+    #     url = 'https://api.cisco.com/supporttools/eox/rest/5/EOXByProductID/1/' + SN +'?responseencoding=json'
+    #     string = 'Bearer '+ resp['access_token']
+    #     header = {'Authorization': string}
+    #     resp_eol = requests.get (url, headers=header)
+    #     data = resp_eol.json()
+    #     
+    #     #Create dictionry ("SN": LastDate)
+    #     for i, SN in enumerate (self.SN_list):
+    #         EoL_list [SN] = data['EOXRecord'][i]['LastDateOfSupport']['value']
+    #     return EoL_list
+    
+        #Comment this if real equipment is being used
+    def getEoL (self):
+        EoL_list = {}
+        sample_SN = ['FOX100402L2','JAF1507BDFN','JAE12024L3C','JAF1525AEKS']
+        
+        #token request
+        token_rul = 'https://cloudsso.cisco.com/as/token.oauth2?grant_type=client_credentials'
+        Client_ID = 'wzxkkg83w8bgjp6kqg8p2eex'
+        Client_Secret = 'GCY7NPUTMSMFpgtQCecpAdFj'
+        resp = requests.post(token_rul, auth=(Client_ID, Client_Secret)).json()
+        
+        #EoL request
+        SN = ','.join(sample_SN)
+        url = 'https://api.cisco.com/supporttools/eox/rest/5/EOXBySerialNumber/1/' + SN +'?responseencoding=json'
+        string = 'Bearer '+ resp['access_token']
+        header = {'Authorization': string}
+        resp_eol = requests.get (url, headers=header)
+        data = resp_eol.json()
+        
+        #Create dictionry ("SN": LastDate)
+        for i, SN in enumerate (sample_SN):
+            EoL_list [SN] = data['EOXRecord'][i]['LastDateOfSupport']['value']
+        return EoL_list

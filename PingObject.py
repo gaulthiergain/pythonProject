@@ -1,8 +1,4 @@
 """
-Python Project
-TODO: add team membres here
-TODO: documentation
-
 Libs used:
 https://docs.python.org/2/library/re.html
 https://docs.python.org/2/library/subprocess.html

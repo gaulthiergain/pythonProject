@@ -1,6 +1,5 @@
 """
 Python Project
-TODO: add team membres here
 
 Libs used:
 https://docs.python.org/2/library/re.html
@@ -71,6 +70,7 @@ def readPasswords(filenamePwd):
         sys.exit(0)
 
 # 1. Read range first
+print 'Reading rante.txt file and detecting active IP'
 filename_range = 'range.txt'
 up_hosts = readRange(filename_range)
 if up_hosts is None:
@@ -82,6 +82,7 @@ else:
         print host
 
 # 2. Read passwords file
+print 'Reading password.txt file'
 filename_pwd = 'password.txt'
 passwords = readPasswords(filename_pwd)
 if passwords is None:
@@ -93,12 +94,25 @@ else:
         print password
 
 # 3. Connect and collect info
+print 'Connecting to the routers and collecting information'
 GetRouterID = GetRouterID (up_hosts, passwords)
 dev = GetRouterID.GetID()
+
+#TODO remove (just for display)
 for list in dev:
     print '\n', list, '\n'
+#TODO remove (just for display)
+ 
+# 4. Get info about End Of Life
+print 'Requesting to the API for End of Life dates'
+EoL = GetRouterID.getEoL()
 
-# 4. Build topology
+#TODO remove (just for display)
+print EoL
+#TODO remove (just for display)
+
+# 5. Build topology
+print 'Building the topology'
 G = nx.Graph()
 
 for key in GetRouterID.neighbors:
