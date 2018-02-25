@@ -1,5 +1,13 @@
 """
-#Libs used: webbrowser, os
+Python Project (Cisco Incubator 2018)
+
+Constributors:
+- Boriychuk Dima
+- Gain Gaulthier
+
+Libs used:
+- https://docs.python.org/2/library/webbrowser.html
+- https://docs.python.org/2/library/os.html
 """
 import webbrowser
 import os
@@ -10,6 +18,9 @@ class HTML:
         self.dev = dev
         self.EoL = EoL
 
+    """
+    Method allowing to create HTML file with router's data
+    """
     def createHTML(self):
         web = open ('results.html','w')
         text = ' <!DOCTYPE html><html><head>'
@@ -57,6 +68,7 @@ class HTML:
         web.write(text)
         web.close()
         
+        # Write HTLM code in a local file
         dir_path = os.path.dirname(os.path.realpath(__file__))
         filename = 'file://' + dir_path + '/results.html'
         webbrowser.open_new_tab(filename)  

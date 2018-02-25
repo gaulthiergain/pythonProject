@@ -1,7 +1,13 @@
 """
+Python Project (Cisco Incubator 2018)
+    
+Constributors:
+- Boriychuk Dima
+- Gain Gaulthier
+
 Libs used:
-https://docs.python.org/2/library/re.html
-https://docs.python.org/2/library/subprocess.html
+- https://docs.python.org/2/library/re.html
+- https://docs.python.org/2/library/subprocess.html
 """
 
 import re
@@ -9,10 +15,16 @@ import subprocess
 
 class PingObject:
 
+    """
+    Constructor
+    """
     def __init__(self, ip_address):
         self.ip_address = ip_address
         self.addresses = set()
 
+    """
+    Method allowing to ping hosts via broadcast address
+    """
     def pingHosts(self):
         try:
             # Ping hosts with the broadcast address
