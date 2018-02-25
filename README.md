@@ -32,7 +32,7 @@ The file _GetRouterID.py_ allows to connect to a router via SSH and to retrieve 
 
 Then the file _HTMLoutput.py_ allows to print data into a local HTML file. 
 
-Finally a 2D graph which represents the current topology of the network (build thanks to CDP neighbors) is printed thank to the libraries _[networkx](https://networkx.github.io)_ and _[matplotlib](https://matplotlib.org)_
+Finally a 2D graph which represents the current topology of the network (built thanks to CDP neighbors) is printed thanks to the libraries _[networkx](https://networkx.github.io)_ and _[matplotlib](https://matplotlib.org)_.
 
 ## Running script
 
