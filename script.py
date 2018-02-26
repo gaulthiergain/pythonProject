@@ -1,9 +1,16 @@
 """
-Python Project
+Python Project (Cisco Incubator 2018)
+
+Constributors:
+- Boriychuk Dima
+- Gain Gaulthier
 
 Libs used:
-https://docs.python.org/2/library/re.html
-https://docs.python.org/3/library/ipaddress.html
+- https://docs.python.org/2/library/re.html
+- https://docs.python.org/3/library/ipaddress.html
+- https://docs.python.org/2/library/sys.html
+- https://networkx.github.io
+- https://matplotlib.org
 """
 
 import re
@@ -103,9 +110,9 @@ print 'Building the topology'
 G = nx.Graph()
 
 for key in GetRouterID.neighbors:
-	G.add_node(str(key))
-	for values in GetRouterID.neighbors[str(key)]:
-		G.add_edge(key, values)
+    G.add_node(str(key))
+    for values in GetRouterID.neighbors[str(key)]:
+        G.add_edge(key, values)
 
 nx.draw(G, with_labels=True, font_weight='bold')
 plt.show()
