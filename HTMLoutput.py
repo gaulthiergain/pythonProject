@@ -28,7 +28,6 @@ class HTML:
         text +='    background-color: #4CAF50;'
         text +='    color: white;}</style>'
         text += '<meta charset="UTF-8"><title>Network details</title></head><body>'
-        print web.closed
         web.write(text)
         for device in self.dev:
             text = '<h3> Router - host: ' + device['Host'] + '</h3> <table id="customers">'
