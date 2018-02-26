@@ -39,3 +39,4 @@ Finally a 2D graph which represents the current topology of the network (built t
 All project has been developed with *python 2.7.10*. To run the program, use the command: _python script.py_. 
 
 Note that a _password_ and a _range_ files must been created before running the script otherwise an exception will occur. 
+     If real equipment is being used, find commented part of code in GetRouterID.py and uncomment it.
